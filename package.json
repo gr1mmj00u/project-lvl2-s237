@@ -1,0 +1,39 @@
+{
+  "name": "diff-calculator-s237",
+  "version": "1.0.0",
+  "description": "Difference calculator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "babel-node": "babel-node",
+    "build": "NODE_ENV=production babel src --out-dir dist --source-maps inline",
+    "prepublishOnly": "npm run build",
+    "eslint": "eslint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gr1mmj00u/project-lvl2-s237.git"
+  },
+  "keywords": [
+    "difference",
+    "calculator"
+  ],
+  "author": "Stanislav Kharitonov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gr1mmj00u/project-lvl2-s237/issues"
+  },
+  "homepage": "https://github.com/gr1mmj00u/project-lvl2-s237#readme",
+  "devDependencies": {
+    "babel-cli": "*",
+    "babel-core": "*",
+    "babel-preset-env": "*",
+    "babel-preset-stage-0": "*"
+  },
+  "dependencies": {
+    "babel-eslint": "^8.2.2",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.10.0"
+  }
+}
