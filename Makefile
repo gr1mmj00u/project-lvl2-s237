@@ -8,4 +8,5 @@ gendiff:
 	npm run babel-node -- src/bin/gendiff.js
 build:
 	npm run build
-	
+test:
+	npm test
