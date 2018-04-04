@@ -1,32 +1,59 @@
 import _ from 'lodash';
 import fs from 'fs';
 
+const buildNode = (key, obj1, obj2) => {
+  const beforeValue = _.get(obj1, key);
+  const afterValue = _.get(obj2, key);
+
+  if (!beforeValue) {
+    return { type: 'add', key, value: afterValue };
+  } else if (!afterValue) {
+    return { type: 'delete', key, value: beforeValue };
+  } else if (beforeValue === afterValue) {
+    return { type: 'unchanged', key, value: beforeValue };
+  }
+
+  return {
+    type: 'changed',
+    key,
+    beforeValue,
+    afterValue,
+  };
+};
+
+const renderNode = (node) => {
+  switch (node.type) {
+    case 'add':
+      return `  + ${node.key}: ${node.value}`;
+    case 'delete':
+      return `  - ${node.key}: ${node.value}`;
+    case 'unchanged':
+      return `    ${node.key}: ${node.value}`;
+    case 'changed':
+      return [
+        `  + ${node.key}: ${node.afterValue}`,
+        `  - ${node.key}: ${node.beforeValue}`,
+      ].join('\n');
+    default:
+      return '';
+  }
+};
+
 export default (beforeFilePath, afterFilePath) => {
   const beforeData = fs.readFileSync(beforeFilePath);
   const afterData = fs.readFileSync(afterFilePath);
 
-  const beforeJson = JSON.parse(beforeData.toString());
-  const afterJson = JSON.parse(afterData.toString());
+  const beforeObj = JSON.parse(beforeData.toString());
+  const afterObj = JSON.parse(afterData.toString());
 
-  const uniqKeys = new Set([...(_.keys(beforeJson)), ...(_.keys(afterJson))]);
+  const uniqKeys = _.union(_.keys(beforeObj), _.keys(afterObj));
 
-  const result = Array.from(uniqKeys).reduce((acc, key) => {
-    if (_.has(beforeJson, key)) {
-      if (_.has(afterJson, key)) {
-        if (_.get(beforeJson, key) === _.get(afterJson, key)) {
-          acc.push(`    ${key}: ${_.get(beforeJson, key)}`);
-        } else {
-          acc.push(`  + ${key}: ${_.get(afterJson, key)}`);
-          acc.push(`  - ${key}: ${_.get(beforeJson, key)}`);
-        }
-      } else {
-        acc.push(`  - ${key}: ${_.get(beforeJson, key)}`);
-      }
-    } else {
-      acc.push(`  + ${key}: ${_.get(afterJson, key)}`);
-    }
+  const diffNodes = uniqKeys.map(key => buildNode(key, beforeObj, afterObj));
+
+  const result = diffNodes.reduce((acc, e) => {
+    acc.push(renderNode(e));
     return acc;
   }, []);
 
-  return `{\n${result.join('\n')}\n}\n`;
+  return `{\n${result.join('\n')}\n}`;
 };

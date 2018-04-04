@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import path from 'path';
 import commander from 'commander';
 import gendiff from '..';
 
@@ -8,19 +9,18 @@ commander
   .description('Compares two configuration files and shows a difference.')
   .option('-f, --format [type]', 'output format')
   .action((firstConfig, secondConfig) => {
-    const firstPath = firstConfig;
-    const secondPath = secondConfig;
-
-    if (typeof firstPath === 'undefined') {
+    if (typeof firstConfig === 'undefined') {
       console.error('no firstConfig given!');
       process.exit(1);
     }
-    if (typeof secondPath === 'undefined') {
+    if (typeof secondConfig === 'undefined') {
       console.error('no secondConfig given!');
       process.exit(1);
     }
+    const fullPathFirstConfig = path.resolve(process.cwd(), firstConfig);
+    const fullPathSecondConfig = path.resolve(process.cwd(), secondConfig);
 
-    const diff = gendiff(firstPath, secondPath);
+    const diff = gendiff(fullPathFirstConfig, fullPathSecondConfig);
     console.log(diff);
   });
 
