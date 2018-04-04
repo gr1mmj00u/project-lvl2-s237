@@ -1,5 +1,7 @@
+import path from 'path';
 import _ from 'lodash';
 import fs from 'fs';
+import yaml from 'js-yaml';
 
 const buildNode = (key, obj1, obj2) => {
   const beforeValue = _.get(obj1, key);
@@ -39,12 +41,28 @@ const renderNode = (node) => {
   }
 };
 
+const parseData = (data, type) => {
+  switch (type) {
+    case '.yaml':
+      return yaml.safeLoad(data.toString());
+    case '.yml':
+      return yaml.safeLoad(data.toString());
+    case '.json':
+      return JSON.parse(data.toString());
+    default:
+      return undefined;
+  }
+};
+
 export default (beforeFilePath, afterFilePath) => {
+  const beforeTypeFile = path.extname(beforeFilePath);
+  const afterTypeFile = path.extname(afterFilePath);
+
   const beforeData = fs.readFileSync(beforeFilePath);
   const afterData = fs.readFileSync(afterFilePath);
 
-  const beforeObj = JSON.parse(beforeData.toString());
-  const afterObj = JSON.parse(afterData.toString());
+  const beforeObj = parseData(beforeData, beforeTypeFile);
+  const afterObj = parseData(afterData, afterTypeFile);
 
   const uniqKeys = _.union(_.keys(beforeObj), _.keys(afterObj));
 

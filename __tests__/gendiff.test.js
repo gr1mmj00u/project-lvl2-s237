@@ -1,7 +1,7 @@
 import gendiff from '../src';
 
-const beforeFilePath = './__tests__/__fixtures__/before.json';
-const afterFilePath = './__tests__/__fixtures__/after.json';
+const beforeFileJsonPath = './__tests__/__fixtures__/gendiff-json/before.json';
+const afterFileJsonPath = './__tests__/__fixtures__/gendiff-json/after.json';
 
 const correctDiff = `{
     host: hexlet.io
@@ -11,6 +11,13 @@ const correctDiff = `{
   + verbose: true
 }`;
 
-test('gendiff', () => {
-  expect(gendiff(beforeFilePath, afterFilePath)).toBe(correctDiff);
+test('gendiff-json', () => {
+  expect(gendiff(beforeFileJsonPath, afterFileJsonPath)).toBe(correctDiff);
+});
+
+const beforeFileYamlPath = './__tests__/__fixtures__/gendiff-yaml/before.yml';
+const afterFileYamlPath = './__tests__/__fixtures__/gendiff-yaml/after.yaml';
+
+test('gendiff-yaml', () => {
+  expect(gendiff(beforeFileYamlPath, afterFileYamlPath)).toBe(correctDiff);
 });
