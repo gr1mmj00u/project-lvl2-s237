@@ -2,6 +2,7 @@ import path from 'path';
 import _ from 'lodash';
 import fs from 'fs';
 import yaml from 'js-yaml';
+import ini from 'ini';
 
 const buildNode = (key, obj1, obj2) => {
   const beforeValue = _.get(obj1, key);
@@ -49,6 +50,8 @@ const parseData = (data, type) => {
       return yaml.safeLoad(data.toString());
     case '.json':
       return JSON.parse(data.toString());
+    case '.ini':
+      return ini.parse(data.toString());
     default:
       return undefined;
   }

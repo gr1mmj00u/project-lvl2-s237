@@ -21,3 +21,10 @@ const afterFileYamlPath = './__tests__/__fixtures__/gendiff-yaml/after.yaml';
 test('gendiff-yaml', () => {
   expect(gendiff(beforeFileYamlPath, afterFileYamlPath)).toBe(correctDiff);
 });
+
+const beforeFileIniPath = './__tests__/__fixtures__/gendiff-ini/before.ini';
+const afterFileIniPath = './__tests__/__fixtures__/gendiff-ini/after.ini';
+
+test('gendiff-ini', () => {
+  expect(gendiff(beforeFileIniPath, afterFileIniPath)).toBe(correctDiff);
+});
