@@ -1,15 +1,11 @@
+import fs from 'fs';
 import gendiff from '../src';
 
 const beforeFileJsonPath = './__tests__/__fixtures__/gendiff-json/before.json';
 const afterFileJsonPath = './__tests__/__fixtures__/gendiff-json/after.json';
+const correctFilePath = './__tests__/__fixtures__/gendiff-json/correct.txt';
 
-const correctDiff = `{
-    host: hexlet.io
-  + timeout: 20
-  - timeout: 50
-  - proxy: 123.234.53.22
-  + verbose: true
-}`;
+const correctDiff = fs.readFileSync(correctFilePath).toString();
 
 test('gendiff-json', () => {
   expect(gendiff(beforeFileJsonPath, afterFileJsonPath)).toBe(correctDiff);

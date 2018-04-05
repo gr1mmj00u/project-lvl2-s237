@@ -1,12 +1,12 @@
 import path from 'path';
 import _ from 'lodash';
 import fs from 'fs';
-import yaml from 'js-yaml';
-import ini from 'ini';
+import parse from './parse';
+
 
 const buildNode = (key, obj1, obj2) => {
-  const beforeValue = _.get(obj1, key);
-  const afterValue = _.get(obj2, key);
+  const beforeValue = obj1[key];
+  const afterValue = obj2[key];
 
   if (!beforeValue) {
     return { type: 'add', key, value: afterValue };
@@ -42,21 +42,6 @@ const renderNode = (node) => {
   }
 };
 
-const parseData = (data, type) => {
-  switch (type) {
-    case '.yaml':
-      return yaml.safeLoad(data.toString());
-    case '.yml':
-      return yaml.safeLoad(data.toString());
-    case '.json':
-      return JSON.parse(data.toString());
-    case '.ini':
-      return ini.parse(data.toString());
-    default:
-      return undefined;
-  }
-};
-
 export default (beforeFilePath, afterFilePath) => {
   const beforeTypeFile = path.extname(beforeFilePath);
   const afterTypeFile = path.extname(afterFilePath);
@@ -64,17 +49,14 @@ export default (beforeFilePath, afterFilePath) => {
   const beforeData = fs.readFileSync(beforeFilePath);
   const afterData = fs.readFileSync(afterFilePath);
 
-  const beforeObj = parseData(beforeData, beforeTypeFile);
-  const afterObj = parseData(afterData, afterTypeFile);
+  const beforeObj = parse(beforeTypeFile)(beforeData.toString());
+  const afterObj = parse(afterTypeFile)(afterData.toString());
 
   const uniqKeys = _.union(_.keys(beforeObj), _.keys(afterObj));
 
   const diffNodes = uniqKeys.map(key => buildNode(key, beforeObj, afterObj));
 
-  const result = diffNodes.reduce((acc, e) => {
-    acc.push(renderNode(e));
-    return acc;
-  }, []);
+  const result = diffNodes.reduce((acc, e) => [...acc, renderNode(e)], []);
 
   return `{\n${result.join('\n')}\n}`;
 };
