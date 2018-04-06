@@ -1,12 +1,19 @@
 import path from 'path';
 import _ from 'lodash';
 import fs from 'fs';
-import parse from './parse';
+import parseData from './parse';
+import renderNode from './render';
 
 
 const buildNode = (key, obj1, obj2) => {
   const beforeValue = obj1[key];
   const afterValue = obj2[key];
+
+  if (_.isObject(beforeValue) && _.isObject(afterValue)) {
+    const uniqKeys = _.union(_.keys(beforeValue), _.keys(afterValue));
+    const children = uniqKeys.map(keyC => buildNode(keyC, beforeValue, afterValue));
+    return { key, children };
+  }
 
   if (!beforeValue) {
     return { type: 'add', key, value: afterValue };
@@ -24,24 +31,6 @@ const buildNode = (key, obj1, obj2) => {
   };
 };
 
-const renderNode = (node) => {
-  switch (node.type) {
-    case 'add':
-      return `  + ${node.key}: ${node.value}`;
-    case 'delete':
-      return `  - ${node.key}: ${node.value}`;
-    case 'unchanged':
-      return `    ${node.key}: ${node.value}`;
-    case 'changed':
-      return [
-        `  + ${node.key}: ${node.afterValue}`,
-        `  - ${node.key}: ${node.beforeValue}`,
-      ].join('\n');
-    default:
-      return '';
-  }
-};
-
 export default (beforeFilePath, afterFilePath) => {
   const beforeTypeFile = path.extname(beforeFilePath);
   const afterTypeFile = path.extname(afterFilePath);
@@ -49,14 +38,14 @@ export default (beforeFilePath, afterFilePath) => {
   const beforeData = fs.readFileSync(beforeFilePath);
   const afterData = fs.readFileSync(afterFilePath);
 
-  const beforeObj = parse(beforeTypeFile)(beforeData.toString());
-  const afterObj = parse(afterTypeFile)(afterData.toString());
+  const beforeObj = parseData(beforeTypeFile)(beforeData.toString());
+  const afterObj = parseData(afterTypeFile)(afterData.toString());
 
   const uniqKeys = _.union(_.keys(beforeObj), _.keys(afterObj));
 
-  const diffNodes = uniqKeys.map(key => buildNode(key, beforeObj, afterObj));
+  const nodesAst = uniqKeys.map(key => buildNode(key, beforeObj, afterObj));
 
-  const result = diffNodes.reduce((acc, e) => [...acc, renderNode(e)], []);
+  const result = _.flattenDeep(nodesAst.reduce((acc, e) => [...acc, renderNode(e)], []));
 
   return `{\n${result.join('\n')}\n}`;
 };
