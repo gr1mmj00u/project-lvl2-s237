@@ -25,13 +25,21 @@ const renderNode = (node, depth = 0) => {
         renderValue(node.afterValue, node.key, depth, '+'),
         renderValue(node.beforeValue, node.key, depth, '-'),
       ];
-    default:
+    case 'object':
       return [
         `${'    '.repeat(depth)}    ${node.key}: {`,
         node.children.map(n => renderNode(n, depth + 1)),
         `${'    '.repeat(depth)}    }`,
       ];
+    default:
+      return [];
   }
 };
 
-export default renderNode;
+const renderer = (nodes) => {
+  const result = _.flattenDeep(nodes.reduce((acc, e) => [...acc, renderNode(e)], []));
+
+  return `{\n${result.join('\n')}\n}`;
+};
+
+export default renderer;

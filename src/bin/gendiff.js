@@ -8,7 +8,7 @@ commander
   .arguments('<firstConfig> <secondConfig>')
   .description('Compares two configuration files and shows a difference.')
   .option('-f, --format [type]', 'output format')
-  .action((firstConfig, secondConfig) => {
+  .action((firstConfig, secondConfig, options) => {
     if (typeof firstConfig === 'undefined') {
       console.error('no firstConfig given!');
       process.exit(1);
@@ -17,10 +17,11 @@ commander
       console.error('no secondConfig given!');
       process.exit(1);
     }
+
     const fullPathFirstConfig = path.resolve(process.cwd(), firstConfig);
     const fullPathSecondConfig = path.resolve(process.cwd(), secondConfig);
 
-    const diff = gendiff(fullPathFirstConfig, fullPathSecondConfig);
+    const diff = gendiff(fullPathFirstConfig, fullPathSecondConfig, options.format);
     console.log(diff);
   });
 

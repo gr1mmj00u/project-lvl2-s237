@@ -11,7 +11,7 @@ const parsers = {
 export default format => (data) => {
   const parse = parsers[format];
   if (!parse) {
-    throw new Error(`unkown format: ${format}`);
+    throw new Error(`unkown file format: ${format}`);
   }
   return parse(data);
 };

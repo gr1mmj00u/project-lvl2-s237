@@ -1,9 +1,8 @@
 import path from 'path';
 import _ from 'lodash';
 import fs from 'fs';
-import parseData from './parse';
-import renderNode from './render';
-
+import parseData from './parser';
+import renderNodes from './renderer';
 
 const buildNode = (key, obj1, obj2) => {
   const beforeValue = obj1[key];
@@ -12,7 +11,7 @@ const buildNode = (key, obj1, obj2) => {
   if (_.isObject(beforeValue) && _.isObject(afterValue)) {
     const uniqKeys = _.union(_.keys(beforeValue), _.keys(afterValue));
     const children = uniqKeys.map(keyC => buildNode(keyC, beforeValue, afterValue));
-    return { key, children };
+    return { type: 'object', key, children };
   }
 
   if (!beforeValue) {
@@ -31,7 +30,12 @@ const buildNode = (key, obj1, obj2) => {
   };
 };
 
-export default (beforeFilePath, afterFilePath) => {
+const buildNodeAst = (beforeObj, afterObj) => {
+  const uniqKeys = _.union(_.keys(beforeObj), _.keys(afterObj));
+  return uniqKeys.map(key => buildNode(key, beforeObj, afterObj));
+};
+
+export default (beforeFilePath, afterFilePath, format = 'ast') => {
   const beforeTypeFile = path.extname(beforeFilePath);
   const afterTypeFile = path.extname(afterFilePath);
 
@@ -41,11 +45,9 @@ export default (beforeFilePath, afterFilePath) => {
   const beforeObj = parseData(beforeTypeFile)(beforeData.toString());
   const afterObj = parseData(afterTypeFile)(afterData.toString());
 
-  const uniqKeys = _.union(_.keys(beforeObj), _.keys(afterObj));
+  const nodesAst = buildNodeAst(beforeObj, afterObj);
 
-  const nodesAst = uniqKeys.map(key => buildNode(key, beforeObj, afterObj));
+  const render = renderNodes(format);
 
-  const result = _.flattenDeep(nodesAst.reduce((acc, e) => [...acc, renderNode(e)], []));
-
-  return `{\n${result.join('\n')}\n}`;
+  return render(nodesAst);
 };

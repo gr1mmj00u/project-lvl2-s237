@@ -36,10 +36,10 @@ test('gendiff-json-ast', () => {
 });
 
 const beforeAstFileYamlPath = path.resolve(__dirname, '__fixtures__/gendiff-yaml-ast/before.yaml');
-const afteAstrFileYamlPath = path.resolve(__dirname, '__fixtures__/gendiff-yaml-ast/after.yml');
+const afterAstFileYamlPath = path.resolve(__dirname, '__fixtures__/gendiff-yaml-ast/after.yml');
 
 test('gendiff-yaml-ast', () => {
-  expect(gendiff(beforeAstFileYamlPath, afteAstrFileYamlPath)).toBe(correctDiffAst);
+  expect(gendiff(beforeAstFileYamlPath, afterAstFileYamlPath)).toBe(correctDiffAst);
 });
 
 const beforeAstFileIniPath = path.resolve(__dirname, '__fixtures__/gendiff-ini-ast/before.ini');
@@ -48,3 +48,13 @@ const afteAstrFileIniPath = path.resolve(__dirname, '__fixtures__/gendiff-ini-as
 test('gendiff-ini-ast', () => {
   expect(gendiff(beforeAstFileIniPath, afteAstrFileIniPath)).toBe(correctDiffAst);
 });
+
+const beforeJsonPlainFlag = path.resolve(__dirname, '__fixtures__/gendiff-plain-flag/before.json');
+const afterJsonPlainFlag = path.resolve(__dirname, '__fixtures__/gendiff-plain-flag/after.json');
+const correctPlainFlag = path.resolve(__dirname, '__fixtures__/gendiff-plain-flag/correct.txt');
+const correctDiffPlainFlag = fs.readFileSync(correctPlainFlag).toString();
+
+test('gendiff-plain-flag', () => {
+  expect(gendiff(beforeJsonPlainFlag, afterJsonPlainFlag, 'plain')).toBe(correctDiffPlainFlag);
+});
+
