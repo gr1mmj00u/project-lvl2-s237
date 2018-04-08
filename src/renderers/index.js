@@ -1,9 +1,11 @@
 import renderAst from './ast';
 import renderPlain from './plain';
+import renderJson from './json';
 
 const renders = {
   ast: renderAst,
   plain: renderPlain,
+  json: renderJson,
 };
 
 export default format => (data) => {

@@ -9,7 +9,7 @@ const renderValue = (value, key, depth = 0, sign = ' ') => {
       `${'    '.repeat(depth)}    }`,
     ];
   }
-  return [`${'    '.repeat(depth)}  ${sign} ${key}: ${value}`];
+  return `${'    '.repeat(depth)}  ${sign} ${key}: ${value}`;
 };
 
 const renderNode = (node, depth = 0) => {
@@ -36,10 +36,8 @@ const renderNode = (node, depth = 0) => {
   }
 };
 
-const renderer = (nodes) => {
+export default (nodes) => {
   const result = _.flattenDeep(nodes.reduce((acc, e) => [...acc, renderNode(e)], []));
 
   return `{\n${result.join('\n')}\n}`;
 };
-
-export default renderer;
