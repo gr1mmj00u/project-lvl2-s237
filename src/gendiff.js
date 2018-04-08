@@ -17,7 +17,7 @@ const buildNodeAst = (beforeObj, afterObj) => {
     if (!_.has(obj1, key)) {
       return { type: 'added', key, value: afterValue };
     } else if (!_.has(obj2, key)) {
-      return { type: 'delete', key, value: beforeValue };
+      return { type: 'deleted', key, value: beforeValue };
     } else if (beforeValue === afterValue) {
       return { type: 'unchanged', key, value: beforeValue };
     } else if (beforeValue !== afterValue) {

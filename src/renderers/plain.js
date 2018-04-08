@@ -8,7 +8,7 @@ const renderNode = (node, path = []) => {
   switch (node.type) {
     case 'added':
       return `Property '${fullPropertyName(node.key, path)}' was added with value: ${renderValue(node.value)}`;
-    case 'delete':
+    case 'deleted':
       return `Property '${fullPropertyName(node.key, path)}' was removed`;
     case 'changed':
       return `Property '${fullPropertyName(node.key, path)}' was updated. From ${renderValue(node.beforeValue)} to ${renderValue(node.afterValue)}`;

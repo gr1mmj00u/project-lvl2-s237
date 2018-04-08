@@ -16,7 +16,7 @@ const renderNode = (node, depth = 0) => {
   switch (node.type) {
     case 'added':
       return renderValue(node.value, node.key, depth, '+');
-    case 'delete':
+    case 'deleted':
       return renderValue(node.value, node.key, depth, '-');
     case 'unchanged':
       return renderValue(node.value, node.key, depth);
