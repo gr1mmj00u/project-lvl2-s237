@@ -1,6 +1,6 @@
 {
   "name": "diff-calc-s237",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Difference calculator",
   "main": "index.js",
   "bin": {
