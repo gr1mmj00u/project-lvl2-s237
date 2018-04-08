@@ -15,19 +15,19 @@ const buildNodeAst = (beforeObj, afterObj) => {
     }
 
     if (!_.has(obj1, key)) {
-      return { type: 'add', key, value: afterValue };
+      return { type: 'added', key, value: afterValue };
     } else if (!_.has(obj2, key)) {
       return { type: 'delete', key, value: beforeValue };
     } else if (beforeValue === afterValue) {
       return { type: 'unchanged', key, value: beforeValue };
+    } else if (beforeValue !== afterValue) {
+      return {
+        type: 'changed',
+        key,
+        beforeValue,
+        afterValue,
+      };
     }
-
-    return {
-      type: 'changed',
-      key,
-      beforeValue,
-      afterValue,
-    };
   };
 
   const uniqKeys = _.union(_.keys(beforeObj), _.keys(afterObj));

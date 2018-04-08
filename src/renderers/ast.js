@@ -14,7 +14,7 @@ const renderValue = (value, key, depth = 0, sign = ' ') => {
 
 const renderNode = (node, depth = 0) => {
   switch (node.type) {
-    case 'add':
+    case 'added':
       return renderValue(node.value, node.key, depth, '+');
     case 'delete':
       return renderValue(node.value, node.key, depth, '-');

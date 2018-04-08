@@ -6,7 +6,7 @@ const renderValue = value => ((_.isObject(value)) ? 'complex value' : `'${value}
 
 const renderNode = (node, path = []) => {
   switch (node.type) {
-    case 'add':
+    case 'added':
       return `Property '${fullPropertyName(node.key, path)}' was added with value: ${renderValue(node.value)}`;
     case 'delete':
       return `Property '${fullPropertyName(node.key, path)}' was removed`;
